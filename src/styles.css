@@ -1,0 +1,24 @@
+
+@import "~ng-zorro-antd/style/index.min.css"; /* 引入基本样式 */
+@import "~ng-zorro-antd/ng-zorro-antd.min.css"; /* 引入组件样式 */
+
+* {
+    margin: 0;
+    padding: 0
+}
+body {
+    font-family: Helvetica;
+}
+#container {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.builder-container .three {
+    flex: 1 1 31%;
+    box-sizing: border-box;
+    -webkit-box-flex: 1;
+    max-width: 31%;
+    max-height: 60px;
+    padding: 0 5px 5px 5px;
+    }

@@ -1,0 +1,153 @@
+<div style="display: flex;">
+    <div style="min-height:100vh;width:400px;border:1px solid lightcoral;">
+        <div style="border: 1px sold lightcoral">
+            <div>容器</div>
+            <ngx-dnd-container class="root-container" [model]="sourceBuilderTools" [dropZones]="['builder-target']"
+                [copy]="true" [droppableItemClass]="droppableItemClass" (drag)="builderDrag($event)" direction="mixed">
+
+                <ng-template let-item="model">
+                    <i [class]="item.icon"></i>
+                    {{item.name}}
+                </ng-template>
+            </ngx-dnd-container>
+
+            <div nz-row>
+                <div nz-col nz-span="12">
+                    <div ngxDroppable="group1" [direction]="'mixed'" nz-row [copy]="true">
+                        <!-- <ng-template let-item="model">
+                                        <i [class]="item.icon"></i>
+                                        {{item.name}}
+                                    </ng-template>
+                                -->
+                            <div style="width:300px;" nz-row ngxDraggable [model]="gridModel">
+                                栅格
+                            </div>
+                            <div style="width:300px;" nz-row ngxDraggable [model]="colModel">
+                                    col
+                                </div>
+                                
+
+
+                    </div>
+                    <!-- <input type="text" nz-input [model]="gridModel" ngxDraggable> -->
+                    <!-- <div class="ngx-dnd-item" nz-row ngxDraggable [model]="gridModel">栅格</div> -->
+                    <!-- <div class="ngx-dnd-item" nz-col nz-span="6" ngxDraggable [model]="spanModel">6栏</div> -->
+
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+
+
+    <div style="width: 100%">
+        <div class="builder-container">
+            <div class="builder-source">
+                <h4>Source</h4>
+
+
+
+            </div>
+            <div class="builder-target">
+                <h4>Target</h4>
+                <div class="ngx-dnd-container clearfix" ngxDroppable="group1" [model]="boxList" [direction]="'mixed'">
+                    <div class="ngx-dnd-box" ngxDraggable [model]="box" *ngFor="let box of boxList">
+                        {{box}}
+                    </div>
+                </div>
+                <div class="ngx-dnd-container clearfix" ngxDroppable="group1" [model]="boxList2" [direction]="'mixed'">
+                    <ng-container  *ngFor="let box of boxList2 ">
+                        <ng-container *ngIf="box.isContainer">
+                                <div  class="ngx-dnd-container clearfix" ngxDroppable="group1" [model]="box.children" [direction]="'mixed'">
+                                        {{box.name}}
+                                        {{box.children |json    }}
+                                    </div>
+                        </ng-container>
+                        <ng-container *ngIf="!box.isContainer">
+                                <div  ngxDraggable [model]="box">
+                                        {{box.name}}
+                                    </div>
+                            </ng-container>
+                            
+                                </ng-container>
+
+               
+                   
+                </div>
+                <div class="ngx-dnd-container" ngxDroppable="group1" [copy]="true" [model]="targetBuilderTools"
+                    direction="mixed">
+                    <!-- <ng-template let-model="model" let-template="template"> -->
+                    <div class="ngx-dnd-item" ngxDraggable [model]="item1Model">Item 1</div>
+                    <!-- <div  class="ngx-dnd-item" ngxDraggable  [model]="item2Model"> Item 2</div> -->
+                    <!-- <div  class="ngx-dnd-item" ngxDraggable  [model]="item3Model">Item 3</div> -->
+                    <!-- <div class="shadow"> -->
+                    <!-- {{model.name}} -->
+                    <!-- </div> -->
+                    <!-- </ng-template> -->
+                </div>
+
+                <ngx-dnd-container [copy]="true" class="root-container" [model]="targetBuilderTools"
+                    dropZone="builder-target" [removeOnSpill]="true" [droppableItemClass]="droppableItemClass"
+                    (drag)="log($event)" (drop)="log($event)" (over)="log($event)" (out)="log($event)"
+                    (remove)="log($event)" direction="mixed">
+
+                    <ng-template let-model="model" let-template="template">
+                        <div [ngSwitch]="model.inputType">
+                            <div *ngSwitchCase="'section'">
+                                <div class="shadow">
+                                    {{model.name}}
+                                    <div nz-row>
+
+                                        <ngx-dnd-container dropZone="builder-target" [model]="model.children"
+                                            [removeOnSpill]="true" [template]="template"
+                                            [droppableItemClass]="droppableItemClass" (drag)="log($event)"
+                                            (drop)="log($event)" (over)="log($event)" (out)="log($event)"
+                                            (remove)="log($event)" (cancel)="log($event)" direction="mixed">
+
+                                        </ngx-dnd-container>
+                                    </div>
+                                </div>
+                            </div>
+                            <div *ngSwitchCase="'grid'">
+                                <div nz-row>
+                                    <ngx-dnd-container dropZone="builder-target" [model]="model.children"
+                                        [removeOnSpill]="true" [template]="template" (drag)="log($event)"
+                                        (drop)="log($event)" (over)="log($event)" (out)="log($event)"
+                                        (remove)="log($event)" (cancel)="log($event)" direction="mixed">
+
+                                    </ngx-dnd-container>
+
+                                </div>
+                            </div>
+                            <div *ngSwitchCase="'col'">
+                                <div nz-col nzSpan="6">列</div>
+                            </div>
+                            <div *ngSwitchDefault>
+                                <label>{{model.name}}</label>
+                                <input nz-input [attr.type]="model.inputType" [ngModel]="model.data">
+                            </div>
+
+                        </div>
+                    </ng-template>
+                </ngx-dnd-container>
+            </div>
+        </div>
+        <div>
+            <h3>Model</h3>
+            <pre><code>{{targetBuilderTools | json}}</code></pre>
+        </div>
+    </div>
+
+
+
+
+
+    <!-- 元素配置 -->
+    <nz-drawer [nzClosable]="true" [nzVisible]="visible" [nzPlacement]="'right'" nzTitle="页面属性"
+        (nzOnClose)="visible=false" [nzMaskClosable]="true">
+        <p>Some contents...</p>
+        <p>Some contents...</p>
+        <p>Some contents...</p>
+    </nz-drawer>
